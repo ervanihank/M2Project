@@ -1,5 +1,5 @@
 % My first try for Drifting Gabor
-%Erva July/21
+%Erva July/21.
 
 close all;
 clearvars; 

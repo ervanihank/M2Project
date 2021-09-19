@@ -17,5 +17,5 @@ When sufficient counter-evidence is presented after the decision is made, this n
 
 # Experimental Design
 
-![FreeTask](C:/Users/ernik/Desktop/M2/Internship/freetask.png)
-![ReplayTask](C:/Users/ernik/Desktop/M2/Internship/replaytask.png)
+![FreeTask](freetask.png)
+![ReplayTask](replaytask.png)

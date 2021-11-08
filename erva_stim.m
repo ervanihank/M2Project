@@ -24,18 +24,16 @@ grey = white / 2;
 
 monitorPos = get(0,'MonitorPositions');
 
+pixelperdeg=25;
+%pixelperdeg=36;
 % for the computer downstairs
 % ScreenHypotenuse = 50.5;
 % pixHypotenuse = sqrt((monitorPos(3)^2)+(monitorPos(4)^2));
 % pixelperdeg = round(pixHypotenuse/ScreenHypotenuse);
 
-
-%pixelperdeg=36;
-pixelperdeg=25;
-
-
 % Open the screen 
 [window, rect] = PsychImaging('OpenWindow', screenid, grey,[0,800;0,800]);
+
 %Screen('BlendFunction',window, 'GL_SRC_ALPHA','GL_ONE_MINUS_SRC_ALPHA')
 Screen('BlendFunction',window, 'GL_ONE','GL_ZERO');
 
@@ -48,12 +46,16 @@ ifi = Screen('GetFlipInterval', window);
 % Center of the screen
 [center_x, center_y] = RectCenter(rect);
 
-%Define gabor_text Parameters
+%% Define gabor_text Parameters
+
 gabor_text_dim = round(pixelperdeg*0.75);
+
 % Sigma of Gaussian//sigma is the standard deviation of the Gaussian
 % function, decide the roundness of the gabor_text. Large numbers = more rounded.
 sigma = gabor_text_dim / 6;
+
 contrast = 0.25 ;
+
 aspectRatio = 1; %specifies the ellipticity of the support of the gabor_text function. For γ = 1, the support is circular. 
 %For γ < 1 the support is elongated in orientation_gabors of the parallel stripes of the function. 
 
@@ -62,10 +64,12 @@ num_cycles = 3;
 freq = num_cycles / gabor_text_dim;
 
 backgroundgabor_text = [0.5 0.5 0.5 0.5];
+
 disable_norm = 1; %‘disable_norm’ Optional, defaults to 0. If set to a value of 1, the special multiplicative normalization term normf = 1/(sqrt(2*pi) * sc) will not be applied to the computed gabor_text.
+
 pre_contrast_multiplier = 0.5; %‘contrastPreMultiplicator’ Optional, defaults to 1. This value is multiplied as a scaling factor to the requested contrast value
 
-% Build a procedural gabor_text texture
+%% Build a procedural gabor_text texture
 gabor_text = CreateProceduralGabor(window, gabor_text_dim, gabor_text_dim,[],backgroundgabor_text , disable_norm, pre_contrast_multiplier);
 
 %Position of gabor_texts
@@ -106,13 +110,13 @@ for i = 1:n_gabors
 end
 
 %percentages and directions for n_trials
-trialpercond=50;
+% trialpercond=50;
 % listpercentages=linspace(5,80,16);
 % allpercentages=repmat(listpercentages,1,trialpercond);
 % n_trials= length(allpercentages);
 %percentages= Shuffle(allpercentages);
 
-
+%%
 %contra gabor
 trialpercontracoh=50;
 listcoherence= linspace(0,40,9);
@@ -151,10 +155,13 @@ phasesPerCycle = 360;
 % drift_speed =  deg_per_sec*pixelperdeg * ifi;
 drift_speed =  phasesPerCycle*deg_per_sec * ifi;
 
-respMat = nan(n_trials,5); % tb edit: save response and correct response
+%%
 
-%kbDev = -1; %for comp downstairs
-kbDev = 4;
+respMat = nan(n_trials,6); % tb edit: save response and correct response
+
+%%
+%kbDev = -1; %for comp downstairs and for my own computer
+kbDev = -1; 
 KbName('UnifyKeyNames');
 %Keyboard Info
 escapeKey = KbName('ESCAPE');
@@ -167,7 +174,9 @@ queueList([escapeKey,leftKey,rightKey ]) = 1;
 KbQueueCreate(kbDev,queueList);
 
 %RestrictKeysForKbCheck([escapeKey,leftKey,rightKey]);
-% Interstimulus interval time in seconds and frames
+
+%%
+% Interstimulus interval time in seconds and frames??????
 isiTimeSecs = 0.5;
 isiTimeFrames = round(isiTimeSecs / ifi);
 
@@ -176,46 +185,47 @@ waitframes = 1 ;
 nextTrialStart =0;
 vbl = Screen('Flip', window); 
 
-%maxwait=5;
-
-stimDur = 5;
-stimFlips = stimDur/ifi;
+%%
+stimDur = 2;
+stimFlips = round(stimDur/ifi);
 stimParams = struct([]);
 
 % perc_noise=10;
 
-
+%%
 for trial=1:n_trials
     %Percentages
     % edit TB: change to allpercentages
     %perc_signal_gabor=percentages(trial);
-% %     perc_signal_gabor=allpercentages(trial);
+    %perc_signal_gabor=allpercentages(trial);
     perc_signal_gabor=50;
     direction=directions(trial);
     perc_cont_gabor= alllistcoh(trial);
-    n_signal_gabor=round((n_gabors *perc_signal_gabor)/100);
-    n_contra_gabor=round((n_gabors *perc_cont_gabor)/100);
-    n_noise_gabor=n_gabors-n_signal_gabor-n_contra_gabor;
+%     n_signal_gabor=round((n_gabors *perc_signal_gabor)/100);
+%     n_contra_gabor=round((n_gabors *perc_cont_gabor)/100);
+%     n_noise_gabor=n_gabors-n_signal_gabor-n_contra_gabor;
     
     %Directions of Gabors
-    glob_direc_signal= repmat(direction,n_signal_gabor,1); %global direction=0 (leftward)
-    glob_direc_contra= repmat(180-direction,n_contra_gabor,1); 
-    glob_direc_noise= randi(360,1,n_noise_gabor);
+%     glob_direc_signal= repmat(direction,n_signal_gabor,1); %global direction=0 (leftward)
+%     glob_direc_contra= repmat(180-direction,n_contra_gabor,1); 
+%     glob_direc_noise= randi(360,1,n_noise_gabor);
     
-    all_gabors_direc=[glob_direc_signal',glob_direc_contra',glob_direc_noise];
-    all_gabors_direc=Shuffle(all_gabors_direc);
+%     all_gabors_direc=[glob_direc_signal',glob_direc_contra',glob_direc_noise];
+%     all_gabors_direc=Shuffle(all_gabors_direc);
     
     %Orientations of Gabors
-    orientation_gabors=rand(1, n_gabors) .* 180;
+%     orientation_gabors=rand(1, n_gabors) .* 180;
     
     %Speed of each Gabor
-    speed_each_gabor = cosd(orientation_gabors-all_gabors_direc) .* drift_speed;
+%     speed_each_gabor = cosd(orientation_gabors-all_gabors_direc) .* drift_speed;
     
     %Properties matrix with the same phase for each gabor_text
     % phase=speed_each_gabor;
-    phase=randi(360,1,n_gabors);
-    propertiesMat = repmat([NaN, freq, sigma, contrast, aspectRatio, 0, 0, 0],n_gabors, 1);
-    propertiesMat(:, 1) = phase';
+    %phase=randi(360,1,n_gabors);
+    [propertiesMat,orientation_gabors] = genPropertiesMat([NaN, freq, sigma, contrast, aspectRatio, 0, 0, 0], n_gabors, 4, 32, stimFlips, direction, drift_speed, perc_signal_gabor/100, perc_cont_gabor/100);
+
+%     propertiesMat = repmat([NaN, freq, sigma, contrast, aspectRatio, 0, 0, 0],n_gabors, 1);
+%       propertiesMat(:,:, 1) = phase';
     
     % Perform initial flip/start of animation
     % vbl = Screen('Flip', window);
@@ -243,12 +253,13 @@ for trial=1:n_trials
     
     for fi = 1:stimFlips
         
-        Screen('DrawTextures', window, gabor_text, [], pos_each_gabor, orientation_gabors' ,[], [], [], [], kPsychDontDoRotation, propertiesMat');
+        Screen('DrawTextures', window, gabor_text, [], pos_each_gabor, orientation_gabors' ,[], [], [], [], ...
+        kPsychDontDoRotation, propertiesMat(:,:,fi)');
         Screen('DrawDots', window, [center_x; center_y], 5, black, [], 2); %fixation point
         Screen('DrawingFinished',window);
         vbl = Screen('Flip', window);
-        phase = phase + speed_each_gabor; %The phase of each gabor_text is changing by the same amount on each frame(they each have the same speed in different all_gabors_direc).
-        propertiesMat(:, 1) = phase';
+%         phase = phase + speed_each_gabor; %The phase of each gabor_text is changing by the same amount on each frame(they each have the same speed in different all_gabors_direc).
+%         propertiesMat(:,:, 1) = phase';
         
     end
     
@@ -304,6 +315,7 @@ for trial=1:n_trials
     respMat(trial,3) = response;
     respMat(trial,4) = rt;
     respMat(trial,5) = correctResponse; % TB edit: save response and correct response
+    respMat(trial,6) = perc_signal_gabor;
     
     % TB edit: this doesn't need to be done each trial - can wait till
     % after
@@ -341,14 +353,15 @@ for trial=1:n_trials
     
     stimParams(trial).positions = pos_each_gabor;
     stimParams(trial).orientation = orientation_gabors;
-    stimParams(trial).speed = speed_each_gabor;
-    stimParams(trial).direction = all_gabors_direc;
+    stimParams(trial).propertiesmat = propertiesMat;
+%     stimParams(trial).speed = speed_each_gabor;
+%    stimParams(trial).direction = all_gabors_direc;
     
     
 end
 
 respMatTable=array2table(respMat);
-respMatTable.Properties.VariableNames(1:5) ={'Percentage','Direction','Response','ReactionTime','Correct'};
+respMatTable.Properties.VariableNames(1:5) ={'PercContra','Direction','Response','ReactionTime','Correct','PercSignal'};
 
 RestrictKeysForKbCheck([])
 sca; 
